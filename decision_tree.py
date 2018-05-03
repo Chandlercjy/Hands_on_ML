@@ -1,29 +1,26 @@
-import collections
-import math
 import pprint
-from math import log2
+from collections import Counter, defaultdict
 
 import numpy as np
 import pandas as pd
-from dataclasses import dataclass, field
 
 
 def info_entropy(features):
     sample_size = len(features)
-    result = collections.Counter(features)
+    result = Counter(features)
 
     assert sample_size  # 分母不能为0
     ent = 0.0
 
     for value in result.values():
         p = value/sample_size
-        ent += -p*math.log2(p)
+        ent += -p*np.log2(p)
 
     return ent
 
 
 def conditional_entropy(features, label_set):
-    feature_dict = collections.defaultdict(list)
+    feature_dict = defaultdict(list)
 
     for feature, result in zip(features, label_set):
         feature_dict[feature].append(result)
@@ -39,7 +36,7 @@ def conditional_entropy(features, label_set):
 
 
 def intrinsic_value(features, label_set):
-    feature_dict = collections.defaultdict(list)
+    feature_dict = defaultdict(list)
 
     for feature, result in zip(features, label_set):
         feature_dict[feature].append(result)
@@ -49,7 +46,7 @@ def intrinsic_value(features, label_set):
 
     for value in feature_dict.values():
         p = len(value)/sample_size
-        iv += -p * math.log2(p)
+        iv += -p * np.log2(p)
 
     return iv
 
@@ -63,7 +60,6 @@ def info_gain(features, label_set):
 
 def choose_max_gain(data_set, label_set, labels):
     result_dict = {}
-    features_len = len(data_set)
 
     for i, value in enumerate(labels):
         features = data_set[:, i]
@@ -77,7 +73,6 @@ def choose_max_gain(data_set, label_set, labels):
 
 def choose_max_gain_ratio_by_inspire(data_set, label_set, labels):
     entropy_dict = {}
-    features_len = len(data_set)
     gain_ratio_dict = {}
 
     for i, value in enumerate(labels):
@@ -117,7 +112,7 @@ def is_repeat(data_set):
 
 
 def get_most_common(value):
-    return list(collections.Counter(value).keys())[0]
+    return list(Counter(value).keys())[0]
 
 
 class DecisionTree:
@@ -202,4 +197,5 @@ if __name__ == "__main__":
     # test = DecisionTree(choose_max_gain)
     test.fit(DATA_SET, LABEL_SET, LABELS)
     test.predict(DATA_SET[1])
+    print(test.result)
     pprint.pprint(test.tree)
