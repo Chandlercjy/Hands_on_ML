@@ -33,6 +33,7 @@ class LinearRegression:
 
 
 if __name__ == "__main__":
+
     df = pd.read_csv('data/linear_regression.csv')
     x1 = df.x1.values
     x2 = df.x2.values
